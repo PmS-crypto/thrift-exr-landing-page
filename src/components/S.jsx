@@ -13,47 +13,59 @@ export function S(props) {
   const { nodes, materials } = useGLTF('./models/s-transformed.glb')
   const s = useRef();
   const scroll = useScroll();
-  const tl = useRef();
-
-  useFrame((state, delta) => {
-    tl.current.seek(scroll.offset * tl.current.duration());
-  })
+  const tl = useRef(0);
   
-  useLayoutEffect(() => { 
-    tl.current = gsap.timeline({ defaults: { duration: 1, ease: 'power1.inOut' } })
-    
-    tl.current
-    .to(s.current.rotation, {y: 2}, 2)
-    .to(s.current.position, {x: 0}, 2)
-    .to(s.current.position, {y: -3}, 2)
+  gsap.registerEffect({
+    name: "fade",
+    defaults: {duration: 2}, //defaults get applied to the "config" object passed to the effect below
+    effect: (targets, config) => {
+        return gsap.to(targets, {duration: config.duration, opacity:0});
+    }
+  });
+  gsap.effects.fade(s);
 
-    .to(s.current.rotation, {y: 4}, 5)   
-    .to(s.current.position, {x: 0}, 5)
+    useFrame((state, delta) => {
+      tl.current.seek(scroll.offset * tl.current.duration());
+    })
+  
+    useLayoutEffect(() => {
+      tl.current = gsap.timeline({ defaults: { duration: 1, ease: 'power1.inOut' } })
+      
+      tl.current
+        .to(s.current.rotation, { y: 2 }, 2)
+        .to(s.current.position, { x: 0 }, 2)
+        .to(s.current.position, { y: -2.9 }, 2)
+        .to(s.current.position, { z: 3 }, 0)
+        .to(s.current.position, { z: 0.1 }, 2)
 
-    .to(s.current.rotation, {y: 6}, 8)
-    .to(s.current.rotation, {x: 0}, 8)
-    .to(s.current.position, {x: 0}, 8)
+        .to(s.current.rotation, { y: 4 }, 5)
+        .to(s.current.position, { x: 0 }, 5)
 
-    .to(s.current.rotation, {y: 8}, 11)
-    .to(s.current.rotation, {x: 0}, 11)    
-    .to(s.current.position, {x: 0}, 11)
+        .to(s.current.rotation, { y: 6 }, 8)
+        .to(s.current.rotation, { x: 0 }, 8)
+        .to(s.current.position, { x: 0 }, 8)
 
-    .to(s.current.rotation, {y: 10}, 14)   
-    .to(s.current.rotation, {x: 0}, 14) 
-    .to(s.current.position, {x: 0}, 14)    
+        .to(s.current.rotation, { y: 8 }, 11)
+        .to(s.current.rotation, { x: 0 }, 11)
+        .to(s.current.position, { x: 0 }, 11)
+        .to(s.current.position, { z: -19 }, 11)
 
-    .to(s.current.rotation, {y: 13}, 17)   
-    .to(s.current.rotation, {x: 0}, 17) 
-    .to(s.current.position, {x: 0}, 17) 
-  },[])
+        .to(s.current.rotation, { y: 10 }, 14)
+        .to(s.current.rotation, { x: 0 }, 14)
+        .to(s.current.position, { x: 0 }, 14)
 
-  return (
-    <group {...props} dispose={null} ref={s}>
-      <mesh geometry={nodes.Cloth.geometry} material={materials['FABRIC 1_FRONT_568544']} />
-      <mesh geometry={nodes._mesh.geometry} material={materials.Material295605} position={[0.029, 1.504, -0.111]} rotation={[-2.66, 0.091, 3.057]} />
-      <primitive object={nodes.body} />
-    </group>
-  )
-}
+        .to(s.current.rotation, { y: 13 }, 17)
+        .to(s.current.rotation, { x: 0 }, 17)
+        .to(s.current.position, { x: 0 }, 17)
+    }, [])
+
+    return (
+      <group {...props} dispose={null} ref={s}>
+        <mesh geometry={nodes.Cloth.geometry} material={materials['FABRIC 1_FRONT_568544']} castShadow />
+        <mesh geometry={nodes._mesh.geometry} material={materials.Material295605} position={[0, -1, -0.111]} rotation={[-2.66, 0.091, 3.057]} castShadow />
+        <primitive object={nodes.body} />
+      </group>
+    )
+  }
 
 useGLTF.preload('./models/s-transformed.glb')
