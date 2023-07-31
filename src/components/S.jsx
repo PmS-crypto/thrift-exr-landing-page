@@ -4,13 +4,51 @@ Command: npx gltfjsx@6.2.10 s.glb --transform
 Files: s.glb [3.89MB] > s-transformed.glb [1.28MB] (67%)
 */
 
-import React, { useRef } from 'react'
-import { useGLTF } from '@react-three/drei'
+import React, { useLayoutEffect, useRef } from 'react'
+import { useGLTF, useScroll } from '@react-three/drei'
+import gsap from 'gsap';
+import { useFrame } from '@react-three/fiber';
 
 export function S(props) {
   const { nodes, materials } = useGLTF('./models/s-transformed.glb')
+  const s = useRef();
+  const scroll = useScroll();
+  const tl = useRef();
+
+  useFrame((state, delta) => {
+    tl.current.seek(scroll.offset * tl.current.duration());
+  })
+  
+  useLayoutEffect(() => { 
+    tl.current = gsap.timeline({ defaults: { duration: 1, ease: 'power1.inOut' } })
+    
+    tl.current
+    .to(s.current.rotation, {y: 2}, 2)
+    .to(s.current.position, {x: 0}, 2)
+    .to(s.current.position, {y: -3}, 2)
+
+    .to(s.current.rotation, {y: 4}, 5)   
+    .to(s.current.position, {x: 0}, 5)
+
+    .to(s.current.rotation, {y: 6}, 8)
+    .to(s.current.rotation, {x: 0}, 8)
+    .to(s.current.position, {x: 0}, 8)
+
+    .to(s.current.rotation, {y: 8}, 11)
+    .to(s.current.rotation, {x: 0}, 11)    
+    .to(s.current.position, {x: 0}, 11)
+
+    .to(s.current.rotation, {y: 10}, 14)   
+    .to(s.current.rotation, {x: 0}, 14) 
+    .to(s.current.position, {x: 0}, 14)    
+
+    .to(s.current.rotation, {y: 13}, 17)   
+    .to(s.current.rotation, {x: 0}, 17) 
+    .to(s.current.position, {x: 0}, 17) 
+  },[])
+
   return (
-    <group {...props} dispose={null}>
+    <group {...props} dispose={null} ref={s}>
       <mesh geometry={nodes.Cloth.geometry} material={materials['FABRIC 1_FRONT_568544']} />
       <mesh geometry={nodes._mesh.geometry} material={materials.Material295605} position={[0.029, 1.504, -0.111]} rotation={[-2.66, 0.091, 3.057]} />
       <primitive object={nodes.body} />

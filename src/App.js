@@ -1,4 +1,4 @@
-import { RoundedBox, ScrollControls, Scroll } from "@react-three/drei";
+import { RoundedBox, ScrollControls, Scroll, Environment } from "@react-three/drei";
 import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { S } from "./components/S";
@@ -6,18 +6,19 @@ import { S } from "./components/S";
 function App() {
   return (
     <>
-      <color attach={"background"} args={["#7F8F86"]} />
+      {/* <color attach={"background"} args={["#0AB1A2","#000000"]} /> */}
       <ambientLight intensity={1} />
       <spotLight position={[0, 25, 0]} angle={1.3} penumbra={1} castShadow intensity={2} shadow-bias={-0.0001} />
-      <ScrollControls pages={4} damping={0.1}>
+      <Environment preset="forest" />
+      <ScrollControls pages={3} damping={0.1}>
+      <S scale="3"/>
         <Scroll>
-          <S scale="3"/>
         </Scroll>
         <Scroll html style={{ width: "100%" }}>
           <h1
             className="title"
             style={{
-              color: "#cdcbca",
+              // color: "#cdcbca",
               position: "absolute",
               top: `65vh`,
               left: "50%",
